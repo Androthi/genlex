@@ -27,7 +27,7 @@
   // "target": "windows-x64",
   // Targets.
   "targets": {
-    "contest": {
+    "genlex": {
       // Executable or library.
       "type": "executable",
       // Additional libraries, sources
