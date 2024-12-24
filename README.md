@@ -1,5 +1,4 @@
-# C3 Config Lib
+# C3 Lexer
 
-A simple configuration library, using .INI style semantics.
-
+A simple lexer test.
 WIP
