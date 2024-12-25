@@ -20,12 +20,8 @@ fn void main()
 		}
 
 		if (l.token == Tkn.EOF) break;
-		io::printfn("char [%c] token [%s] ", l.c, l.token);
+		if (l.token == Tkn.WHITE_SPACE || l.token == Tkn.LINE_BREAK) p.skip_ws()!!;
+		io::printfn("char [%c] token [%s]\n String of :[%s]", l.c, l.token, l.slice);
 	}
 
-	p.caret = 200;
-	l = p.peek();
-	if ( @ok(l)) (void)io::printfn("peek [%c], [%s]", l.c, l.token);
-	l = p.lex();
-	if ( @ok(l)) (void)io::printfn("lex same [%c], [%s]", l.c, l.token);
 }

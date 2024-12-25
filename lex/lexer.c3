@@ -93,7 +93,7 @@ struct Lexeme
 {
 	Tkn token;
 	char c;
-	usz caret;
+	String slice;
 }
 
 // no error checking to see if data is valid string. will just hard crash if data is missing.
@@ -116,7 +116,7 @@ fn Lexeme! Lexer.lex(&self)
 			{
 				.token = token,
 				.c = cur_char,
-				.caret = caret,
+				.slice = self.data[caret:1],
 			};
 }
 
@@ -129,6 +129,21 @@ fn Lexeme! Lexer.peek(&self)
 	return lexresult;
 }
 
+<*
+	skip white spaces in data
+*>
+fn void! Lexer.skip_ws(&self)
+{
+	Lexeme! l;
+	while (true)
+	{
+		l = self.peek()!;
+		if (catch err = l ) break;
+		if (l.token != Tkn.WHITE_SPACE && l.token != Tkn.LINE_BREAK ) break;
+		if (l.token == Tkn.EOF) break;
+		self.caret++;
+	}
+}
 
 /*
 
