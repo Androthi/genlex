@@ -4,9 +4,12 @@ import lexer;
 
 fn void main()
 {
+//mem::@report_heap_allocs_in_scope()
+//{
 	Lexer p;
 	p.data = (String)file::load_new("main.c3")!!;
-	
+	defer free(p.data);
+
 	Lexeme! l;
 
 	while( true )
@@ -24,4 +27,6 @@ fn void main()
 		io::printfn("char [%c] token [%s]\n String of :[%s]", l.c, l.token, l.slice);
 	}
 
+	
+//}; // for leak test
 }
