@@ -96,6 +96,7 @@ struct Lexeme
 	usz caret;
 }
 
+// no error checking to see if data is valid string. will just hard crash if data is missing.
 fn Lexeme! Lexer.lex(&self)
 {
 	usz caret = self.caret;
