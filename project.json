@@ -10,7 +10,7 @@
   // Authors, optionally with email.
   "authors": [ "Sevag Krikorian <androth.pro@gmail.com>" ],
   // Version using semantic versioning.
-  "version": "0.1.0",
+  "version": "0.1.2",
   // Sources compiled for all targets.
   "sources": [ "./**" ],
   // Test sources compiled for all targets.
