@@ -1,4 +1,5 @@
 module lexer;
+import std::io;
 
 enum Tkn
 {
@@ -46,25 +47,41 @@ enum Tkn
 fault LexError
 {
 	ILLEGAL_CHARACTER,
+	NOT_NUMERIC,
 }
 
 Tkn[256] lex_token_table =
 {
+	// non grapheme chars
 	Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR,
 	Tkn.WHITE_SPACE, Tkn.LINE_BREAK, Tkn.ERROR, Tkn.ERROR, Tkn.LINE_BREAK, Tkn.ERROR, Tkn.ERROR,
 	Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR,
 	Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR,
+
+	// start of ascii set.. symbols
 	Tkn.WHITE_SPACE, Tkn.BANG, Tkn.QUOTE, Tkn.HASH, Tkn.DOLLAR, Tkn.PERCENT, Tkn.AMPER, Tkn.APOST,
 	Tkn.LPAREN, Tkn.RPAREN, Tkn.ASTERISK, Tkn.PLUS, Tkn.COMMA, Tkn.MINUS, Tkn.PERIOD, Tkn.SLASH,
+
+	// numbers
 	Tkn.DIGIT, Tkn.DIGIT, Tkn.DIGIT, Tkn.DIGIT, Tkn.DIGIT, Tkn.DIGIT, Tkn.DIGIT, Tkn.DIGIT, Tkn.DIGIT, Tkn.DIGIT,
+
+	// symbols
 	Tkn.COLON, Tkn.SEMICOLON, Tkn.LESS, Tkn.EQUAL, Tkn.GREATER, Tkn.QUESTION, Tkn.AT,
+	
+	// lower case alpha
 	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA,
 	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA,
 	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA,
+
+	// symbols
 	Tkn.LBRACKET, Tkn.BACKSLASH, Tkn.RBRACKET, Tkn.CARET, Tkn.UNDERSCORE, Tkn.GRAVE,
+
+	// upper case alpha
 	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA,
 	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA,
 	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA,
+
+	// symbols
 	Tkn.LBRACE, Tkn.VERTBAR, Tkn.RBRACE, Tkn.TILDE,
 
 	// utf8 alpha chars
@@ -96,7 +113,9 @@ struct Lexeme
 	String slice;
 }
 
-// no error checking to see if data is valid string. will just hard crash if data is missing.
+<*
+ @require self.data  "NULL data"
+*>
 fn Lexeme! Lexer.lex(&self)
 {
 	usz caret = self.caret;
@@ -130,7 +149,8 @@ fn Lexeme! Lexer.peek(&self)
 }
 
 <*
-	skip white spaces in data
+ skip white spaces in data
+ @require self.data  "NULL data"
 *>
 fn void! Lexer.skip_ws(&self)
 {
@@ -145,18 +165,27 @@ fn void! Lexer.skip_ws(&self)
 	}
 }
 
+<*
+ @require self.data  "NULL data"
+*>
+fn Lexeme! Lexer.get_numeric(&self)
+{
+	Lexeme! current = self.peek();
+	if (catch excuse = current) return current;
+	if (current.token != Tkn.DIGIT) return LexError.NOT_NUMERIC?;
+
+	usz save_caret = self.caret++;
+	while (true)
+	{
+		io::eprintn("not implemented");
+		break;
+	}
+
+	return Lexeme{};
+}
 /*
 
-	switch (token)
-	{
-		case Tkn.ALPHA:
-
-			//> TODO: get id, compare with ID list, return token, fill lexer fields
-			break;
-
-		case Tkn.DIGIT:
-
-			usz save_caret = self.caret++;
+				usz save_caret = self.caret++;
 			bool is_float = false;
 			bool done = false;
 			tc = TypeClass.NUMERIC; // assume numeric by default
