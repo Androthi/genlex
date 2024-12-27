@@ -42,6 +42,8 @@ enum Tkn
 	VERTBAR,
 	TILDE,
 
+	NUMERIC,
+	ID,
 }
 
 fault LexError
@@ -154,14 +156,13 @@ fn Lexeme! Lexer.peek(&self)
 *>
 fn void! Lexer.skip_ws(&self)
 {
-	Lexeme! l;
+	
 	while (true)
 	{
-		l = self.peek()!;
+		Lexeme! l = self.peek();
 		if (catch err = l ) break;
-		if (l.token != Tkn.WHITE_SPACE && l.token != Tkn.LINE_BREAK ) break;
-		if (l.token == Tkn.EOF) break;
-		self.caret++;
+		if (l.token == Tkn.WHITE_SPACE || l.token == Tkn.LINE_BREAK ) { self.caret++; continue; }
+		break;
 	}
 }
 
@@ -173,57 +174,19 @@ fn Lexeme! Lexer.get_numeric(&self)
 	Lexeme! current = self.peek();
 	if (catch excuse = current) return current;
 	if (current.token != Tkn.DIGIT) return LexError.NOT_NUMERIC?;
-
-	usz save_caret = self.caret++;
+	usz save_caret = self.caret;
 	while (true)
 	{
-		io::eprintn("not implemented");
+		self.caret++;
+		if (self.caret == self.data.len) break;
+		Tkn token = lex_token_table[self.data[self.caret]];
+		if (token == Tkn.ERROR) return LexError.ILLEGAL_CHARACTER?;
+		if (token == Tkn.DIGIT) continue;
 		break;
 	}
 
-	return Lexeme{};
+	return Lexeme {
+		.token = Tkn.NUMERIC,
+		.slice = self.data[save_caret : self.caret-save_caret],
+	};
 }
-/*
-
-				usz save_caret = self.caret++;
-			bool is_float = false;
-			bool done = false;
-			tc = TypeClass.NUMERIC; // assume numeric by default
-
-			while( true )
-			{
-				Lexeme! nextlex = self.lex();
-				if (@catch(nextlex)) return nextlex;
-
-				switch (nextlex.token)
-				{
-					case Tkn.PERIOD:
-						
-						if (is_float) // found a period after a float period.  eg 12.134. ... 
-						{
-							done = true;
-							break;
-						}
-						// first period found, this is a float.
-						is_float = true;
-						tc = TypeClass.FLOAT;
-
-					case Tkn.DIGIT:
-						self.caret++;
-						continue;
-
-					case Tkn.EOF:
-						done = true;
-						break;
-
-					default:
-						self.caret++;
-						done = true;
-						break;
-				}
-				
-				if (done) break;
-			}
-
-			break;
-*/

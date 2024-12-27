@@ -3,7 +3,7 @@
   "warnings": [ "no-unused" ],
   "authors": [ "Sevag Krikorian <androth.pro@gmail.com>" ],
   "version": "0.1.2",
-  "sources": [ "./**" ],
+  "sources": [ "./**", "../lib/**" ],
   "test-sources": [ "test/**" ],
 
   "output": "build",
