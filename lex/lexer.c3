@@ -42,14 +42,14 @@ enum Tkn
 	VERTBAR,
 	TILDE,
 
-	NUMERIC,
 	ID,
 }
 
 fault LexError
 {
 	ILLEGAL_CHARACTER,
-	NOT_NUMERIC,
+	NOT_ALPHA,
+	//NOT_NUMERIC,
 }
 
 Tkn[256] lex_token_table =
@@ -105,7 +105,9 @@ Tkn[256] lex_token_table =
 struct Lexer
 {
 	String data;
+	String id_separators;
 	usz caret;
+	usz line;
 }
 
 struct Lexeme
@@ -113,6 +115,21 @@ struct Lexeme
 	Tkn token;
 	char c;
 	String slice;
+}
+
+fn Lexer Lexer.init (String data, String id_separators = "_") @operator(construct)
+{	
+	return {
+		.data = data,
+		.caret = 0,
+		.line = 1,
+		.id_separators = id_separators,
+	};
+}
+
+fn void Lexer.free (&self)
+{
+	free (self.data);
 }
 
 <*
@@ -129,9 +146,13 @@ fn Lexeme! Lexer.lex(&self)
 				};
 	}
 
-	char cur_char = self.data[self.caret++];
+	char cur_char = self.data[self.caret];
 	Tkn token = lex_token_table[cur_char];
 	if (token == Tkn.ERROR) return LexError.ILLEGAL_CHARACTER?;
+	if (cur_char == '\n') self.line++;
+	if (token == Tkn.ALPHA) return self.get_id();
+
+	self.caret++;
 
 	return	Lexeme
 			{
@@ -145,8 +166,10 @@ fn Lexeme! Lexer.lex(&self)
 fn Lexeme! Lexer.peek(&self)
 {
 	usz save_caret = self.caret;
+	usz save_line = self.line;
 	Lexeme lexresult = self.lex()!;
 	self.caret = save_caret;
+	self.line = save_line;
 	return lexresult;
 }
 
@@ -160,6 +183,7 @@ fn void! Lexer.skip_ws(&self)
 	while (true)
 	{
 		Lexeme l = self.peek()!;
+		if (self.data[self.caret] == '\n') self.line++;
 		if (l.token == Tkn.WHITE_SPACE || l.token == Tkn.LINE_BREAK ) { self.caret++; continue; }
 		break;
 	}
@@ -168,7 +192,37 @@ fn void! Lexer.skip_ws(&self)
 <*
  @require self.data  "NULL data"
 *>
-fn Lexeme! Lexer.get_numeric(&self)
+fn Lexeme! Lexer.get_id(&self)
+{
+	usz start = self.caret;
+
+	char cur_char = self.data[self.caret];
+	Tkn token = lex_token_table[cur_char];
+	if (token != Tkn.ALPHA && !string::char_in_set(cur_char, self.id_separators) ) return LexError.NOT_ALPHA?;
+	while ( true )
+	{
+		self.caret++;
+		if (self.caret == self.data.len) break;
+		cur_char = self.data[self.caret];
+		token = lex_token_table[cur_char];
+		if (token == Tkn.ALPHA) continue;
+		if (string::char_in_set(cur_char, self.id_separators)) continue;
+		if (token == Tkn.ERROR) return LexError.ILLEGAL_CHARACTER?;
+		break;
+	}
+	return 	Lexeme
+			{
+				.token = Tkn.ID,
+				.slice = self.data[start : self.caret-start],
+			};
+}
+
+/*
+too much variety to support in lexer. should be job of parser.
+<*
+ @require self.data  "NULL data"
+*>
+fn Lexeme! Lexer.get_numeric(&self, char seperator = 0)
 {
 	Lexeme current = self.peek()!;
 	if (current.token != Tkn.DIGIT) return LexError.NOT_NUMERIC?;
@@ -180,6 +234,7 @@ fn Lexeme! Lexer.get_numeric(&self)
 		Tkn token = lex_token_table[self.data[self.caret]];
 		if (token == Tkn.ERROR) return LexError.ILLEGAL_CHARACTER?;
 		if (token == Tkn.DIGIT) continue;
+		if (seperator == self.data[self.caret]) continue;
 		break;
 	}
 
@@ -188,3 +243,4 @@ fn Lexeme! Lexer.get_numeric(&self)
 		.slice = self.data[save_caret : self.caret-save_caret],
 	};
 }
+*/

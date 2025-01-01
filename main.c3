@@ -18,6 +18,8 @@ fn int sort_fn( String left, String right)
   	return 0;
 }
 
+const SAM_PLE = 5532_3356;
+
 
 String[] c3_keywords =
 {
@@ -90,9 +92,9 @@ fn void main()
 		io::printfn ("[%d] %s", index, item );
 	}
 
-	Lexer p;
-	p.data = (String)file::load_new("main.c3")!!;
-	defer free(p.data);
+	Lexer p = Lexer.init((String)file::load_new("main.c3")!!);
+	defer p.free();
+
 
 	Lexeme! l;
 
@@ -102,8 +104,7 @@ fn void main()
 
 		if( anyfault e = @catch(l))
 		{
-			io::print( "Error :");
-		 	io::printn( e );
+			io::printfn( "Error Line[%d] :%s", p.line, e);
 			break;
 		}
 
@@ -115,23 +116,29 @@ fn void main()
 			continue;
 		}
 
-		if ( t == Tkn.DIGIT)
+		// if ( t == Tkn.DIGIT)
+		// {
+		// 	l = p.get_numeric();
+		// 	if( anyfault e = @catch(l))
+		// 	{
+		// 		io::print( "Error :");
+		// 	 	io::printn( e );
+		// 		break;
+		// 	}
+
+		// 	io::printfn ("Got NUMERIC :%s", l.slice)!!;
+		// 	io::printn( l.slice.to_int())!!;
+		// }
+		if (t == Tkn.ID)
 		{
-			l = p.get_numeric();
-			if( anyfault e = @catch(l))
-			{
-				io::print( "Error :");
-			 	io::printn( e );
-				break;
-			}
-
-			io::printfn ("Got NUMERIC :%s", l.slice)!!;
-			io::printn( l.slice.to_int())!!;
+			p.caret += l.slice.len!!;
+		} else
+		{
+			p.caret++;
 		}
-		p.caret++;
-	
+			
 
-		io::printfn("char [%c] token [%s]\n String of :[%s]", l.c, l.token, l.slice)!!;
+		io::printfn("Line[%d] char [%c] token [%s]	String of :[%s]", p.line, l.c, l.token, l.slice)!!;
 	}
 
 
