@@ -145,7 +145,7 @@ fn Lexeme! Lexer.lex(&self)
 fn Lexeme! Lexer.peek(&self)
 {
 	usz save_caret = self.caret;
-	Lexeme! lexresult = self.lex();
+	Lexeme lexresult = self.lex()!;
 	self.caret = save_caret;
 	return lexresult;
 }
@@ -159,8 +159,7 @@ fn void! Lexer.skip_ws(&self)
 	
 	while (true)
 	{
-		Lexeme! l = self.peek();
-		if (catch err = l ) break;
+		Lexeme l = self.peek()!;
 		if (l.token == Tkn.WHITE_SPACE || l.token == Tkn.LINE_BREAK ) { self.caret++; continue; }
 		break;
 	}
@@ -171,8 +170,7 @@ fn void! Lexer.skip_ws(&self)
 *>
 fn Lexeme! Lexer.get_numeric(&self)
 {
-	Lexeme! current = self.peek();
-	if (catch excuse = current) return current;
+	Lexeme current = self.peek()!;
 	if (current.token != Tkn.DIGIT) return LexError.NOT_NUMERIC?;
 	usz save_caret = self.caret;
 	while (true)
