@@ -1,10 +1,9 @@
+module genlexer;
 import std::io;
 import buffer;
-import std::core::mem;
 import std::collections::list;
-import std::sort;
 
-String main_file = $embed("lex/lexer_tpl.c3");
+String main_file = $embed("lexer_tpl.c3");
 
 def WordList = List(<String>);
 
@@ -40,8 +39,14 @@ fn void main()
 	dest.append (main_file);
 	dest.set_filepath("lexer.c3"); // default file path
 
-	source = buffer::new_file("gen_sample.txt");
+	source = buffer::new_file("gen_source.txt");
 	defer source.free();
+
+	if (source.len() == 0)
+	{
+		io::eprintfn ("Expecting a file called 'gen_source.txt' in current directory");
+		return;
+	}
 
 	Buffer work = buffer::new();
 	defer work.free();
@@ -157,42 +162,3 @@ fn void main()
 	keyword_lens.free();
 //}; // for leak test
 }
-
-/*
-	Lexer p = Lexer.init((String)file::load_new("main.c3")!!);
-	defer p.free();
-
-
-	Lexeme! l;
-
-	while( true )
-	{
-		l = p.peek();
-
-		if( anyfault e = @catch(l))
-		{
-			io::printfn( "Error Line[%d] :%s", p.line, e);
-			break;
-		}
-
-		Tkn t = l.token!!;
-		if ( t == Tkn.EOF) break;
-		if ( t == Tkn.WHITE_SPACE || t == Tkn.LINE_BREAK)
-		{
-			p.skip_ws()!!;
-			continue;
-		}
-
-
-		if (t == Tkn.ID)
-		{
-			p.caret += l.slice.len!!;
-		} else
-		{
-			p.caret++;
-		}
-			
-
-		io::printfn("Line[%d] char [%c] token [%s]	String of :[%s]", p.line, l.c, l.token, l.slice)!!;
-	}
-*/

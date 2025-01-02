@@ -1,6 +1,6 @@
-.module = my_lex
-.filepath = lex/samp_lex.c3
-.prefix = Foo
+.module = lex
+.filepath = lex.c3
+.prefix = Ck
 .keywords =
 	asm			any			anyfault	assert
 	attribute	break		nextcase	cast
@@ -17,7 +17,7 @@
 	short 		ushort 		char 		isz
 	usz			float16 	float128 	foreach
 
-.prefix = Baz
+.prefix = Cc
 .keywords = 
 	echo 		else 		error 		endfor
 	endforeach 	endif		endswitch	for

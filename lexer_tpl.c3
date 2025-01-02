@@ -1,3 +1,7 @@
+<*
+	This is an auto-generated file. Any modifications made here will be lost
+	the next time this file is generated.
+*>
 module lexer;
 import std::io;
 import std::sort;
@@ -56,7 +60,6 @@ macro check_keyword( $arr, String s )
 {
 	foreach (item : $arr )
 	{
-		//io::printn( item.kw);
 		if (item.name.len == s.len)
 		{
 			if (item.name == s)
@@ -206,6 +209,7 @@ fn void! Lexer.skip_ws(&self)
 	while (true)
 	{
 		Lexeme l = self.peek()!;
+		if (l.token == Tkn.EOF) break;
 		if (self.data[self.caret] == '\n') self.line++;
 		if (l.token == Tkn.WHITE_SPACE || l.token == Tkn.LINE_BREAK ) { self.caret++; continue; }
 		break;

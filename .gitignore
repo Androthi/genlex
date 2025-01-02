@@ -1,3 +1,3 @@
 build/*
 *-workspace
-concepts.txt
+examples/lex.c3
