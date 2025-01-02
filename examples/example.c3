@@ -24,30 +24,30 @@ fn void main()
 
 		switch (t)
 		{
-			case Tkn.EOF: break ROOT;
+			case EOF: break ROOT;
 			
-			case Tkn.WHITE_SPACE:
-			case Tkn.LINE_BREAK:
+			case WHITE_SPACE:
+			case LINE_BREAK:
 				p.skip_ws()!!;
 				continue;
 
-			case Tkn.ID:
+			case ID:
 				p.caret += l.slice.len!!;
 				Ck token = lex::check_keyword (&lex::ck_lens, l.slice)!!;
-				if (token != Ck.NO_KEYWORD)
+				if (token != NO_KEYWORD)
 				{
 					(void)io::printfn ("Found C3 keyword [%s] %s", token, l.slice);
 				}
 				break;
 
-			case Tkn.DOLLAR:
+			case DOLLAR:
 				p.caret++;
 				l = p.lex()!!;
 				t = l.token!!;
-				if (t == Tkn.ID)
+				if (t == ID)
 				{
 					Cc token = lex::check_keyword (&lex::cc_lens, l.slice)!!;
-					if (token != Cc.NO_KEYWORD)
+					if (token != NO_KEYWORD)
 					{
 						(void)io::printfn ("Found C3 compile time keyword [%s] %s", token, l.slice);
 					}

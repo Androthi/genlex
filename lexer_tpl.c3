@@ -77,51 +77,51 @@ fault LexError
 Tkn[256] lex_token_table =
 {
 	// non grapheme chars
-	Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR,
-	Tkn.WHITE_SPACE, Tkn.LINE_BREAK, Tkn.ERROR, Tkn.ERROR, Tkn.LINE_BREAK, Tkn.ERROR, Tkn.ERROR,
-	Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR,
-	Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR, Tkn.ERROR,
+	ERROR, ERROR, ERROR, ERROR, ERROR, ERROR, ERROR, ERROR, ERROR,
+	WHITE_SPACE, LINE_BREAK, ERROR, ERROR, LINE_BREAK, ERROR, ERROR,
+	ERROR, ERROR, ERROR, ERROR, ERROR, ERROR, ERROR, ERROR,
+	ERROR, ERROR, ERROR, ERROR, ERROR, ERROR, ERROR, ERROR,
 
 	// start of ascii set.. symbols
-	Tkn.WHITE_SPACE, Tkn.BANG, Tkn.QUOTE, Tkn.HASH, Tkn.DOLLAR, Tkn.PERCENT, Tkn.AMPER, Tkn.APOST,
-	Tkn.LPAREN, Tkn.RPAREN, Tkn.ASTERISK, Tkn.PLUS, Tkn.COMMA, Tkn.MINUS, Tkn.PERIOD, Tkn.SLASH,
+	WHITE_SPACE, BANG, QUOTE, HASH, DOLLAR, PERCENT, AMPER, APOST,
+	LPAREN, RPAREN, ASTERISK, PLUS, COMMA, MINUS, PERIOD, SLASH,
 
 	// numbers
-	Tkn.DIGIT, Tkn.DIGIT, Tkn.DIGIT, Tkn.DIGIT, Tkn.DIGIT, Tkn.DIGIT, Tkn.DIGIT, Tkn.DIGIT, Tkn.DIGIT, Tkn.DIGIT,
+	DIGIT, DIGIT, DIGIT, DIGIT, DIGIT, DIGIT, DIGIT, DIGIT, DIGIT, DIGIT,
 
 	// symbols
-	Tkn.COLON, Tkn.SEMICOLON, Tkn.LESS, Tkn.EQUAL, Tkn.GREATER, Tkn.QUESTION, Tkn.AT,
+	COLON, SEMICOLON, LESS, EQUAL, GREATER, QUESTION, AT,
 	
 	// lower case alpha
-	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA,
-	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA,
-	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA,
+	ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,
+	ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,
+	ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,
 
 	// symbols
-	Tkn.LBRACKET, Tkn.BACKSLASH, Tkn.RBRACKET, Tkn.CARET, Tkn.UNDERSCORE, Tkn.GRAVE,
+	LBRACKET, BACKSLASH, RBRACKET, CARET, UNDERSCORE, GRAVE,
 
 	// upper case alpha
-	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA,
-	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA,
-	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA,
+	ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,
+	ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,
+	ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,
 
 	// symbols
-	Tkn.LBRACE, Tkn.VERTBAR, Tkn.RBRACE, Tkn.TILDE,
+	LBRACE, VERTBAR, RBRACE, TILDE,
 
 	// utf8 alpha chars
-	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA,
-	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA,
-	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA,
-	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA,
-	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA,
-	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA,
-	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA,
-	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA,
-	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA,
-	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA,
-	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA,
-	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA,
-	Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA, Tkn.ALPHA
+	ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,
+	ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,
+	ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,
+	ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,
+	ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,
+	ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,
+	ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,
+	ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,
+	ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,
+	ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,
+	ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,
+	ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA,
+	ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA, ALPHA
 };
 
 struct Lexer
@@ -164,15 +164,15 @@ fn Lexeme! Lexer.lex(&self)
 	{
 		return	Lexeme
 				{
-					.token = Tkn.EOF
+					.token = EOF
 				};
 	}
 
 	char cur_char = self.data[self.caret];
 	Tkn token = lex_token_table[cur_char];
-	if (token == Tkn.ERROR) return LexError.ILLEGAL_CHARACTER?;
+	if (token == ERROR) return LexError.ILLEGAL_CHARACTER?;
 	if (cur_char == '\n') self.line++;
-	if (token == Tkn.ALPHA) return self.get_id();
+	if (token == ALPHA) return self.get_id();
 
 	self.caret++;
 
@@ -205,9 +205,9 @@ fn void! Lexer.skip_ws(&self)
 	while (true)
 	{
 		Lexeme l = self.peek()!;
-		if (l.token == Tkn.EOF) break;
+		if (l.token == EOF) break;
 		if (self.data[self.caret] == '\n') self.line++;
-		if (l.token == Tkn.WHITE_SPACE || l.token == Tkn.LINE_BREAK ) { self.caret++; continue; }
+		if (l.token == WHITE_SPACE || l.token == LINE_BREAK ) { self.caret++; continue; }
 		break;
 	}
 }
@@ -221,21 +221,21 @@ fn Lexeme! Lexer.get_id(&self)
 
 	char cur_char = self.data[self.caret];
 	Tkn token = lex_token_table[cur_char];
-	if (token != Tkn.ALPHA && !string::char_in_set(cur_char, self.id_separators) ) return LexError.NOT_ALPHA?;
+	if (token != ALPHA && !string::char_in_set(cur_char, self.id_separators) ) return LexError.NOT_ALPHA?;
 	while ( true )
 	{
 		self.caret++;
 		if (self.caret == self.data.len) break;
 		cur_char = self.data[self.caret];
 		token = lex_token_table[cur_char];
-		if (token == Tkn.ALPHA) continue;
+		if (token == ALPHA) continue;
 		if (string::char_in_set(cur_char, self.id_separators)) continue;
-		if (token == Tkn.ERROR) return LexError.ILLEGAL_CHARACTER?;
+		if (token == ERROR) return LexError.ILLEGAL_CHARACTER?;
 		break;
 	}
 	return 	Lexeme
 			{
-				.token = Tkn.ID,
+				.token = ID,
 				.slice = self.data[start : self.caret-start],
 			};
 }
