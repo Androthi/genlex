@@ -1,97 +1,164 @@
 import std::io;
-import lexer;
+import buffer;
 import std::core::mem;
 import std::collections::list;
 import std::sort;
 
-def SortedList = List(<String>);
+String main_file = $embed("lex/lexer_tpl.c3");
 
-fn int sort_fn( String left, String right)
+def WordList = List(<String>);
+
+fn bool expect (char c)
 {
-	if (left == right) return 0;
-
-	for (int i = 0; i < left.len; i++)
+	source.span();
+	char ch = source.get_char()!!;
+	if (ch != c) 
 	{
-		if (left[i] < right[i]) return -1;
-		if (left[i] > right[i]) return 1;
+		io::eprintfn( "Expecting :%c", c);
+		return false;
 	}
-  	return 0;
+	return true;
 }
 
-const SAM_PLE = 5532_3356;
-
-
-String[] c3_keywords =
-{
-	"asm", "any", "anyfault", "assert", "attribute", "break",
-	"case", "cast", "catch", "const", "continue", "default",
-	"defer", "def", "do", "else", "enum", "extern", "errtype",
-	"false", "fn", "generic", "if", "import", "inline", "macro",
-	"module", "nextcase", "null", "public", "return", "struct",
-	"switch", "true", "try", "typeid", "var", "void", "while",
-	"bool", "quad", "double", "float", "long", "ulong", "int",
-	"uint", "byte", "short", "ushort", "char", "isz", "usz",
-	"float16", "float128", "$and", "$assert", "$case", "$default",
-	"$echo", "$else", "$error", "$endfor", "$endforeach", "$endif",
-	"$endswitch", "$for", "$foreach", "$if", "$switch", "$typef",
-	"$vaarg", "$vaconst", "$vacount", "$varef", "$vatype"
-};
-
-// using index from 2 to 16 for lengths. ignore 0 and 1
-SortedList[16] keyword_lens;
-
-
+Buffer source;
 
 fn void main()
 {
+
 //mem::@report_heap_allocs_in_scope()
 //{
 
-	foreach ( item : keyword_lens )
-	{
-		item.new_init();
-	}
+	String prefix;
+	String prefix_lc;
 
-	foreach ( item : c3_keywords )
+	WordList keyword_lens;
+	defer keyword_lens.free();
+	keyword_lens.new_init();
+
+	Buffer dest = buffer::new();
+	defer dest.free();
+	dest.append (main_file);
+	dest.set_filepath("lexer.c3"); // default file path
+
+	source = buffer::new_file("gen_sample.txt");
+	defer source.free();
+
+	Buffer work = buffer::new();
+	defer work.free();
+
+	Buffer enums = buffer::new();
+	defer enums.free();
+
+	bool has_prefix = false;
+	while SCAN: (!source.is_eof())
 	{
-		switch (item.len)
+		usz! index = source.find_next(".");
+		if (catch e = index) break; //no more commands
+
+		String word = source.get_word()!!;
+		switch (word)
 		{
-			case 0:
-			case 1:
-				io::eprintn("keywords < 2 chars not supported");
+			case ".module":
+				if (!expect ('=')) break SCAN;
+				source.span();
+				word = source.get_word()!!;
+				dest.cursor_to_bof();
+				dest.delete_range (0, dest.cursor_to_eol());
+				dest.insertf (0, "module %s;\n", word);
 
-			case 2:
-			case 3:
-			case 4:
-			case 5:
-			case 6:
-			case 7:
-			case 8:
-			case 9:
-			case 10:
-			case 11:
-			case 12:
-			case 13:
-			case 14:
-			case 15:
-				keyword_lens[item.len].push( item );
+			case ".filepath":
+				if (!expect ('=')) break SCAN;
+				source.span();
+				word = source.get_word()!!;
+				dest.set_filepath(word);
+
+			case ".prefix":
+				if (has_prefix){
+					io::eprintf("already have prefix declared. need to follow with .keywords\nbefore another .prefix can be declared\n");
+					break SCAN;
+				}
+				if (!expect ('=')) break SCAN;
+				source.span();
+				word = source.get_word()!!;
+				prefix = word;
+				prefix_lc = prefix.temp_ascii_to_lower();
+				enums.appendf( "struct %s_s\n{\n\tString\tname;\n\t%s\ttoken;\n}\n\n", prefix, prefix);
+				enums.appendf( "enum %s\n{\n\tNO_KEYWORD,\n", prefix);
+				work.appendf ("%s_s[] %s_lens = \n{\n", prefix, prefix_lc);
+				work.appendf ("\t{\"\",\t%s.NO_KEYWORD},\n", prefix);
+				has_prefix = true;
+
+			case ".keywords":
+				if (!has_prefix){
+					io::eprintfn("a .prefix needs to be declared before .keywords");
+					break SCAN;
+				}
+				if (!expect ('=')) break SCAN;
+				usz start_index = source.span();
+				usz! end_index = source.find_next(".");
+				if ( catch e = end_index )
+				{
+					if (e != BufferError.EOF)
+					{
+						io::eprintfn("Error %s", e);
+						break SCAN;
+					}
+					end_index = source.len();
+				} else
+				{
+					source.cursor_left(1); // get before '.' so we can find it again in the loop
+				}
+
+				Buffer word_buffer = source.new_sub_buffer(start_index, end_index-start_index, allocator::temp())!!;
+				while (!word_buffer.is_eof())
+				{
+					word_buffer.span();
+					if (word_buffer.is_eof()) break;
+					word = word_buffer.get_word()!!;
+					if (word.len < 2)
+					{
+						io::eprintfn ("word lengths must be at least 2 characters");
+						break SCAN;
+					}
+					keyword_lens.push (word);
+				}
+
+				foreach(item : keyword_lens )
+				{
+					String estr = string::tformat("%s", item);
+					estr.convert_ascii_to_upper();
+					work.appendf("\t{\"%s\",\t\t%s.%s},\n", item, prefix, estr);
+					enums.appendf("\t%s,\n", estr);
+				}
+				work.append("};\n\n");
+				enums.append("}\n\n");
+
+				keyword_lens.clear();
+				has_prefix = false;
 
 			default:
-				io::eprintn("keywords > 15 chars not supported");
+				io::eprintfn("unknown command %s", word);
+				break SCAN;
 		}
 	}
 
-	foreach( item : keyword_lens )
-	{
-		if (item.len() > 2) { quicksort( item, &sort_fn); }
-	}
+	dest.cursor_to_bof();
+	dest.find_next("//#DATA")!!;
+	usz loc = dest.cursor_right_lines(2);
+	dest.insert_buffer (loc, work);
 
-	
-	foreach( index, item : keyword_lens )
-	{
-		io::printfn ("[%d] %s", index, item );
-	}
+	dest.cursor_to_bof();
+	dest.find_next("//#ENUM")!!;
+	loc = dest.cursor_right_lines(2);
+	dest.insert_buffer (loc, enums);
 
+	dest.save()!!;
+
+	keyword_lens.free();
+//}; // for leak test
+}
+
+/*
 	Lexer p = Lexer.init((String)file::load_new("main.c3")!!);
 	defer p.free();
 
@@ -116,19 +183,7 @@ fn void main()
 			continue;
 		}
 
-		// if ( t == Tkn.DIGIT)
-		// {
-		// 	l = p.get_numeric();
-		// 	if( anyfault e = @catch(l))
-		// 	{
-		// 		io::print( "Error :");
-		// 	 	io::printn( e );
-		// 		break;
-		// 	}
 
-		// 	io::printfn ("Got NUMERIC :%s", l.slice)!!;
-		// 	io::printn( l.slice.to_int())!!;
-		// }
 		if (t == Tkn.ID)
 		{
 			p.caret += l.slice.len!!;
@@ -140,11 +195,4 @@ fn void main()
 
 		io::printfn("Line[%d] char [%c] token [%s]	String of :[%s]", p.line, l.c, l.token, l.slice)!!;
 	}
-
-
-	foreach ( item : keyword_lens )
-	{
-		item.free();
-	}
-//}; // for leak test
-}
+*/

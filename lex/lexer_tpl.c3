@@ -1,9 +1,11 @@
 module lexer;
 import std::io;
+import std::sort;
 
 enum Tkn
 {
 	ERROR,
+	NONE,
 	EOF,
 	WHITE_SPACE,
 	LINE_BREAK,
@@ -45,11 +47,32 @@ enum Tkn
 	ID,
 }
 
+//#ENUM
+
+//#DATA
+
+
+macro check_keyword( $arr, String s )
+{
+	foreach (item : $arr )
+	{
+		//io::printn( item.kw);
+		if (item.name.len == s.len)
+		{
+			if (item.name == s)
+			{
+				return item.token;
+			}
+		}
+	}
+	return (*$arr)[0].token;
+}
+
 fault LexError
 {
 	ILLEGAL_CHARACTER,
 	NOT_ALPHA,
-	//NOT_NUMERIC,
+	NOT_FOUND,
 }
 
 Tkn[256] lex_token_table =
@@ -216,31 +239,3 @@ fn Lexeme! Lexer.get_id(&self)
 				.slice = self.data[start : self.caret-start],
 			};
 }
-
-/*
-too much variety to support in lexer. should be job of parser.
-<*
- @require self.data  "NULL data"
-*>
-fn Lexeme! Lexer.get_numeric(&self, char seperator = 0)
-{
-	Lexeme current = self.peek()!;
-	if (current.token != Tkn.DIGIT) return LexError.NOT_NUMERIC?;
-	usz save_caret = self.caret;
-	while (true)
-	{
-		self.caret++;
-		if (self.caret == self.data.len) break;
-		Tkn token = lex_token_table[self.data[self.caret]];
-		if (token == Tkn.ERROR) return LexError.ILLEGAL_CHARACTER?;
-		if (token == Tkn.DIGIT) continue;
-		if (seperator == self.data[self.caret]) continue;
-		break;
-	}
-
-	return Lexeme {
-		.token = Tkn.NUMERIC,
-		.slice = self.data[save_caret : self.caret-save_caret],
-	};
-}
-*/

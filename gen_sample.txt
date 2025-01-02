@@ -1,0 +1,27 @@
+.module = my_lex
+.filepath = lex/samp_lex.c3
+.prefix = Foo
+.keywords =
+	asm			any			anyfault	assert
+	attribute	break		nextcase	cast
+	catch		const		continue	default
+	defer		def 		do 			else
+	enum		extern		errtype		false
+	fn			generic		if			import
+	inline 		macro		module 		
+	null		public		return		struct
+	switch		true		try 		typeid
+	var 		void 		while		bool
+	quad 		double 		float 		long
+	ulong 		int			uint 		byte
+	short 		ushort 		char 		isz
+	usz			float16 	float128 	foreach
+
+.prefix = Baz
+.keywords = 
+	echo 		else 		error 		endfor
+	endforeach 	endif		endswitch	for
+	foreach 	if 			switch 		typef
+	vaarg 		vaconst 	vacount 	varef
+	vatype		and 		assert 		case
+	default
