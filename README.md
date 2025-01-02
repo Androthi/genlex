@@ -11,21 +11,21 @@ by an equal followed by the arguments.
 
 Commands:
 
-.module = <module name>
+.module = \<module name\>
 
 The created file will have this module name.
 
-.filepath = <path>
+.filepath = \<path\>
 
 The destination of the created file.
 
-.prefix = <prefix>
+.prefix = \<prefix\>
 
 This should be a short prefix which will be used to generate the structures, enums
 and keywords. a .prefix section should be followed by a .keywords section.
 
 .keywords =
-<white space separated list of keywords>
+\<white space separated list of keywords\>
 
 These keywords will go in search trees along with accompanying tokens.
 
@@ -99,13 +99,17 @@ fn void main()
 }
 ```
 
+Note, if you just want a simple lexer like this, without any keywords, just copy
+and rename the lexer_tpl.c3 file. The generator is only necessary if you want
+a keyword search added automatically.
+
 ## Building the example
 
 The examples folder contains an example program that lexes through C3 keywords
 
 Files:
--example.c3 the executable.
--gen_source.txt the command file to build the lexer
+* example.c3 the executable.
+* gen_source.txt the command file to build the lexer
 
 This is what the command file looks like.
 
@@ -151,3 +155,4 @@ run the command:
 ```c3c run example```
 
 The example program scans it's own source and outputs any C3 keywords that it finds.
+
