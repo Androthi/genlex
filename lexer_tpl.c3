@@ -1,7 +1,3 @@
-<*
-	This is an auto-generated file. Any modifications made here will be lost
-	the next time this file is generated.
-*>
 module lexer;
 import std::io;
 import std::sort;

@@ -146,7 +146,7 @@ To build the example, 1st, build genlexer by running c3c build in the project fo
 
 change directory to examples.
 run the genlex command in this directory.
-```../build/genlexer```
+```../build/genlex```
 
 this will create the file "lex.c3" in the examples folder
 
