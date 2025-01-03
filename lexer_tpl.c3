@@ -1,3 +1,8 @@
+<*
+	This file is auto-generated.
+	Any changes will be lost next time it is regenerated.
+*>
+//#MOD
 module lexer;
 import std::io;
 import std::sort;
@@ -228,7 +233,7 @@ fn Lexeme! Lexer.get_id(&self)
 		if (self.caret == self.data.len) break;
 		cur_char = self.data[self.caret];
 		token = lex_token_table[cur_char];
-		if (token == ALPHA) continue;
+		if (token == ALPHA || token == DIGIT) continue;
 		if (string::char_in_set(cur_char, self.id_separators)) continue;
 		if (token == ERROR) return LexError.ILLEGAL_CHARACTER?;
 		break;

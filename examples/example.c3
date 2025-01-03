@@ -9,7 +9,6 @@ fn void main()
 	Lexer p = Lexer.init((String)file::load_new("examples/example.c3")!!);
 	defer free(p.data);
 	Lexeme! l;
-	usz len = p.data.len;
 	while ROOT: ( true )
 	{
 		l = p.peek();
@@ -32,7 +31,7 @@ fn void main()
 				continue;
 
 			case ID:
-				p.caret += l.slice.len!!;
+				p.caret += l.slice.len!!;  // we do this since peek() doesn't advance the lexing cursor
 				Ck token = lex::check_keyword (&lex::ck_lens, l.slice)!!;
 				if (token != NO_KEYWORD)
 				{

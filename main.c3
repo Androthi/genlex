@@ -68,8 +68,10 @@ fn void main()
 				source.span();
 				word = source.get_word()!!;
 				dest.cursor_to_bof();
-				dest.delete_range (0, dest.cursor_to_eol());
-				dest.insertf (0, "module %s;\n", word);
+				dest.find_next("//#MOD")!!;
+				usz loc = dest.cursor_right_lines(2);
+				dest.delete_range (loc, dest.cursor_to_eol());
+				dest.insertf (loc, "module %s;\n", word);
 
 			case ".filepath":
 				if (!expect ('=')) break SCAN;
