@@ -54,22 +54,9 @@ enum Tkn
 
 //#ENUM
 
-//#DATA
-
-
-macro check_keyword( $arr, String s )
+macro check_id( $Type, String s )
 {
-	foreach (item : $arr )
-	{
-		if (item.name.len == s.len)
-		{
-			if (item.name == s)
-			{
-				return item.token;
-			}
-		}
-	}
-	return (*$arr)[0].token;
+    return ($Type)@enum_from_value( $Type, id, s) ?? $Type.NOT_FOUND;
 }
 
 fault LexError

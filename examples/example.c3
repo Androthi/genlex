@@ -32,8 +32,8 @@ fn void main()
 
 			case ID:
 				p.caret += l.slice.len!!;  // we do this since peek() doesn't advance the lexing cursor
-				Ck token = lex::check_keyword (&lex::ck_lens, l.slice)!!;
-				if (token != NO_KEYWORD)
+				Ck token = lex::check_id (Ck, l.slice)!!;
+				if (token != NOT_FOUND)
 				{
 					(void)io::printfn ("Found C3 keyword [%s] %s", token, l.slice);
 				}
@@ -45,8 +45,8 @@ fn void main()
 				t = l.token!!;
 				if (t == ID)
 				{
-					Cc token = lex::check_keyword (&lex::cc_lens, l.slice)!!;
-					if (token != NO_KEYWORD)
+					Cc token = lex::check_id (Cc, l.slice)!!;
+					if (token != NOT_FOUND)
 					{
 						(void)io::printfn ("Found C3 compile time keyword [%s] %s", token, l.slice);
 					}

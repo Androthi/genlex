@@ -28,7 +28,6 @@ fn void main()
 //{
 
 	String prefix;
-	String prefix_lc;
 
 	WordList keyword_lens;
 	defer keyword_lens.free();
@@ -48,8 +47,8 @@ fn void main()
 		return;
 	}
 
-	Buffer work = buffer::new();
-	defer work.free();
+	Buffer word_buffer = buffer::new();
+	defer word_buffer.free();
 
 	Buffer enums = buffer::new();
 	defer enums.free();
@@ -88,11 +87,7 @@ fn void main()
 				source.span();
 				word = source.get_word()!!;
 				prefix = word;
-				prefix_lc = prefix.temp_ascii_to_lower();
-				enums.appendf( "struct %s_s\n{\n\tString\tname;\n\t%s\ttoken;\n}\n\n", prefix, prefix);
-				enums.appendf( "enum %s\n{\n\tNO_KEYWORD,\n", prefix);
-				work.appendf ("%s_s[] %s_lens = \n{\n", prefix, prefix_lc);
-				work.appendf ("\t{\"\",\t%s.NO_KEYWORD},\n", prefix);
+				enums.appendf( "enum %s : (String id)\n{\n\tNOT_FOUND = \t\t\"not_found\",\n", prefix);
 				has_prefix = true;
 
 			case ".keywords":
@@ -116,7 +111,8 @@ fn void main()
 					source.cursor_left(1); // get before '.' so we can find it again in the loop
 				}
 
-				Buffer word_buffer = source.new_sub_buffer(start_index, end_index-start_index, allocator::temp())!!;
+				word_buffer.clear();
+				source.sub_buffer(start_index, end_index-start_index, &word_buffer)!!;
 				while (!word_buffer.is_eof())
 				{
 					word_buffer.span();
@@ -134,10 +130,8 @@ fn void main()
 				{
 					String estr = string::tformat("%s", item);
 					estr.convert_ascii_to_upper();
-					work.appendf("\t{\"%s\",\t\t%s.%s},\n", item, prefix, estr);
-					enums.appendf("\t%s,\n", estr);
+					enums.appendf("\t%s = \t\t\"%s\",\n", estr, item);
 				}
-				work.append("};\n\n");
 				enums.append("}\n\n");
 
 				keyword_lens.clear();
@@ -150,13 +144,8 @@ fn void main()
 	}
 
 	dest.cursor_to_bof();
-	dest.find_next("//#DATA")!!;
-	usz loc = dest.cursor_right_lines(2);
-	dest.insert_buffer (loc, work);
-
-	dest.cursor_to_bof();
 	dest.find_next("//#ENUM")!!;
-	loc = dest.cursor_right_lines(2);
+	usz loc = dest.cursor_right_lines(2);
 	dest.insert_buffer (loc, enums);
 
 	dest.save()!!;

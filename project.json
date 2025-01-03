@@ -2,7 +2,7 @@
   "langrev": "1",
   "warnings": [ "no-unused" ],
   "authors": [ "Sevag Krikorian <androth.pro@gmail.com>" ],
-  "version": "0.1.7",
+  "version": "0.2.0",
   "test-sources": [ "test/**" ],
 
   "output": "build",

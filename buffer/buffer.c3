@@ -308,6 +308,7 @@ fn void Buffer.clear(self)
 {
 	if (!self) return;
 	self.data().len = 0;
+	self.data().cursor = 0;
 }
 
 <*
