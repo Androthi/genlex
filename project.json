@@ -9,7 +9,7 @@
   "targets": {
     "genlex": {
       "type": "executable",
-      "sources": [ "./*", "buffer/**"],
+      "sources": [ "./src/**", "lib/**"],
     },
     "example": {
       "type": "executable",

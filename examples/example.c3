@@ -6,6 +6,7 @@ $echo "compiling...";
 
 fn void main()
 {
+
 	Lexer p = Lexer.init((String)file::load_new("examples/example.c3")!!);
 	defer free(p.data);
 	Lexeme! l;
