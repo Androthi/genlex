@@ -95,8 +95,8 @@ fn void main()
 			io::printn( excuse );
 			break;
 		}
-		if (l.token == Tkn.EOF) break;
-		if (l.token == Tkn.WHITE_SPACE || l.token == Tkn.LINE_BREAK) p.skip_ws()!!;
+		if (l.token == EOF) break;
+		if (l.token == WHITE_SPACE || l.token == LINE_BREAK) p.skip_ws()!!;
 		io::printfn("char [%c] token [%s] String of :[%s]", l.c, l.token, l.slice);
 	}
 }
