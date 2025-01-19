@@ -25,3 +25,33 @@
 	vaarg 		vaconst 	vacount 	varef
 	vatype		and 		assert 		case
 	default
+
+.newtoken = PLUSEQUAL
+.newtoken = PLUSPLUS
+.token = PLUS
+			if ((self.caret + 1) != self.data.len)
+			{
+				cur_char = self.data[self.caret + 1];
+				Tkn peek_token = lex_token_table[cur_char];
+				if (peek_token == PLUS)
+				{
+					self.caret += 2;
+					return	Lexeme
+					{
+						.token = PLUSPLUS,
+						.c = cur_char,
+						.slice = self.data[caret:2],
+					};
+				}
+				else if (peek_token == EQUAL)
+				{
+					self.caret += 2;
+					return	Lexeme
+					{
+						.token = PLUSEQUAL,
+						.c = cur_char,
+						.slice = self.data[caret:2],
+					};
+				}
+			}
+			nextcase default;

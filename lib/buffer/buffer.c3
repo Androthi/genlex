@@ -8,6 +8,7 @@ module buffer;
 import std::io;
 import std::io::file;
 import std::core::string;
+import cset;
 
 
 distinct Buffer (OutStream) = void*;
@@ -16,8 +17,7 @@ distinct Cset = String;
 const usz MIN_CAPACITY @private = 16;
 const usz DEFAULT_CAPACITY @private = 4096;
 
-const Cset WHITE_SPACES = "\t\n\r ";
-const Cset DELIMITERS = " \t\n\r,.<>|\\/-+*";
+const CSet DELIMITERS = cset::make_ascii_cset (" \t\n\r`~!@#$%^&*()_-=+[{}]\\|;:'\",<.>/?");
 
 fault BufferError
 {

@@ -1,4 +1,5 @@
 module buffer;
+import cset;
 
 <*
 	uses internal cursor to tokenize the contents of the buffer
@@ -8,16 +9,16 @@ module buffer;
 	@return! BufferError.NULL_BUFFER, BufferError.EOF
 	@return `a string of found token`
 *>
-fn String! Buffer.next_token(&self, Cset set = DELIMITERS)
+fn String! Buffer.next_token(&self, CSet* set = &DELIMITERS)
 {
 	if (!*self) return BufferError.NULL_BUFFER?;
 	BufferData* data = self.data();
 	if (data.len == 0) return BufferError.EOF?;
 	if (data.cursor == data.len) return BufferError.EOF?;
 	usz token_start = data.cursor;
-	while (token_start < data.len && char_in_cset(data.chars[token_start], set)) token_start++;
+	while (token_start < data.len && set.char_is_in_set(data.chars[token_start])) token_start++;
 	usz token_end = token_start+1;
-	while (token_end < data.len && !char_in_cset(data.chars[token_end], set)) token_end++;
+	while (token_end < data.len && !set.char_is_in_set(data.chars[token_end])) token_end++;
 	data.cursor = token_end;
 	return (String)data.chars[token_start:token_end-token_start];
 }
@@ -30,15 +31,15 @@ fn String! Buffer.next_token(&self, Cset set = DELIMITERS)
 	@return! BufferError.NULL_BUFFER, BufferError.EOF
 	@return `a string of found token`
 *>
-fn String! Buffer.peek_token(&self, Cset set = DELIMITERS)
+fn String! Buffer.peek_token(&self, CSet* set = &DELIMITERS)
 {
 	if (!*self) return BufferError.NULL_BUFFER?;
 	BufferData* data = self.data();
 	if (data.len == 0) return BufferError.EOF?;
 	if (data.cursor == data.len) return BufferError.EOF?;
 	usz token_start = data.cursor;
-	while (token_start < data.len && char_in_cset(data.chars[token_start], set)) token_start++;
+	while (token_start < data.len && set.char_is_in_set(data.chars[token_start])) token_start++;
 	usz token_end = token_start+1;
-	while (token_end < data.len && !char_in_cset(data.chars[token_end], set)) token_end++;
+	while (token_end < data.len && !set.char_is_in_set(data.chars[token_end])) token_end++;
 	return (String)data.chars[token_start:token_end-token_start];
 }

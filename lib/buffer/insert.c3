@@ -30,7 +30,7 @@ macro void Buffer.append(&self, value)
 				$case $defined((String)value):
 					self.insert_chars(self.len(), (String)value);
 				$default:
-					$error "Unsupported type for append – use appendf instead.";
+					$error "Unsupported type for append - use appendf instead.";
 			$endswitch
 	$endswitch
 }

@@ -40,6 +40,16 @@ fn void main()
 				}
 				break;
 
+			case PLUSPLUS:
+				(void)io::printfn ("Found custom ++ token :%s", l.slice);
+				p.caret += 2;  // only need to do this since we peek instead of lex.
+				break;
+
+			case PLUSEQUAL:
+				(void)io::printfn ("Found custom += token :%s", l.slice);
+				p.caret += 2; // only need to do this since we peek instead of lex.
+				break;
+
 			case DOLLAR:
 				p.caret++;
 				l = p.lex()!!;

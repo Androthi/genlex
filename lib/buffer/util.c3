@@ -1,5 +1,6 @@
 module buffer;
 import std::io;
+import cset;
 
 //+ Buffer editing ============================================================
 
@@ -50,31 +51,19 @@ fn void Buffer.replace_string(&self, String needle, String replacement)
 }
 
 <*
-	checks to see if a character is in a character set
-	@param c `the character to check for`
-	@param set `the Cset in which to search for this character`
-	@return `true if found, false if not found`
-*>
-macro bool char_in_cset(char c, Cset set)
-{
-	foreach (ch : set) if (ch == c) return true;
-	return false;
-}
-
-<*
 	remove white spaces from start and end buffer
 *>
-fn void Buffer.trim(&self, Cset set = WHITE_SPACES)
+fn void Buffer.trim(&self, CSet* set = &cset::WHITE_SPACE)
 {
 	if (!*self) return;
 	BufferData* data = self.data();
 	if (data.len == 0) return;
 	usz count = 0;
-	while (count < data.len && char_in_cset(data.chars[count], set)) count++;
+	while (count < data.len && set.char_is_in_set(data.chars[count])) count++;
 	if (count == data.len) return self.clear();
 	if (count) self.delete(0, count);
 	count = data.len -1;
-	while (count > 0 && char_in_cset(data.chars[count], set)) count--;
+	while (count > 0 && set.char_is_in_set(data.chars[count])) count--;
 	if (count < data.len -1) return self.chop(count);
 }
 

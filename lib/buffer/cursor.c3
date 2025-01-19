@@ -1,6 +1,6 @@
 module buffer;
 import std::io;
-
+import cset;
 <*
 	@return `index of cursor`
 *>
@@ -75,6 +75,9 @@ fn usz Buffer.cursor_right_lines(&self, usz num_lines)
 {
 	if (!*self) return 0;
 	BufferData* data = self.data();
+	if (!num_lines) return data.cursor;
+	// if currently sitting on non-line break, then go to the end of this line first.
+	if (!cset::LINE_BREAK.char_is_in_set (data.chars[data.cursor])) self.cursor_to_eol();
 	while (num_lines)
 	{
 		self.cursor_to_eol();
@@ -111,7 +114,7 @@ fn usz Buffer.cursor_to_bol(&self)
 
 	while (data.cursor > 0)
 	{
-		if (char_in_cset(data.chars[data.cursor], "\n\r")) break;
+		if (cset::LINE_BREAK.char_is_in_set (data.chars[data.cursor])) break;
 		data.cursor--;
 	}
 
@@ -132,7 +135,7 @@ fn usz Buffer.cursor_to_eol(&self)
 
 	while (data.cursor < data.len)
 	{
-		if (char_in_cset(data.chars[data.cursor], "\n\r")) break;
+		if (cset::LINE_BREAK.char_is_in_set (data.chars[data.cursor])) break;
 		data.cursor++;
 	}
 	return data.cursor;
@@ -142,13 +145,13 @@ fn usz Buffer.cursor_to_eol(&self)
 	moves the internal cursor to the next character that is not a member of set.
 	@return `index of cursor`
 *>
-fn usz Buffer.span(&self, Cset set = WHITE_SPACES)
+fn usz Buffer.span(&self, CSet* set = &cset::WHITE_SPACE)
 {
 	if (!*self) return 0;
 	BufferData* data = self.data();
 	while (data.cursor < data.len)
 	{
-		if (!char_in_cset(data.chars[data.cursor], set)) break;
+		if (!set.char_is_in_set (data.chars[data.cursor])) break;
 		data.cursor++;
 	}
 	return data.cursor;
@@ -158,13 +161,13 @@ fn usz Buffer.span(&self, Cset set = WHITE_SPACES)
 	moves the internal cursor to the previous character that is not a member of set.
 	@return `index of cursor`
 *>
-fn usz Buffer.r_span(&self, Cset set = WHITE_SPACES)
+fn usz Buffer.r_span(&self, CSet* set = &cset::WHITE_SPACE)
 {
 	if (!*self) return 0;
 	BufferData* data = self.data();
 	while (data.cursor > 0)
 	{
-		if (!char_in_cset(data.chars[data.cursor], set)) break;
+		if (!set.char_is_in_set (data.chars[data.cursor])) break;
 		data.cursor--;
 	}
 	return data.cursor;
@@ -174,13 +177,13 @@ fn usz Buffer.r_span(&self, Cset set = WHITE_SPACES)
 	moves the internal cursor to the next character that is a member of set.
 	@return `index of cursor`
 *>
-fn usz Buffer.brk(&self, Cset set = WHITE_SPACES)
+fn usz Buffer.brk(&self, CSet* set = &cset::WHITE_SPACE)
 {
 	if (!*self) return 0;
 	BufferData* data = self.data();
 	while (data.cursor < data.len)
 	{
-		if (char_in_cset(data.chars[data.cursor], set)) break;
+		if (set.char_is_in_set (data.chars[data.cursor])) break;
 		data.cursor++;
 	}
 	return data.cursor;	
@@ -190,13 +193,13 @@ fn usz Buffer.brk(&self, Cset set = WHITE_SPACES)
 	moves the internal cursor to the previous character that is a member of set.
 	@return `index of cursor`
 *>
-fn usz Buffer.r_brk(&self, Cset set = WHITE_SPACES)
+fn usz Buffer.r_brk(&self, CSet* set = &cset::WHITE_SPACE)
 {
 	if (!*self) return 0;
 	BufferData* data = self.data();
 	while (data.cursor > 0)
 	{
-		if (char_in_cset(data.chars[data.cursor], set)) break;
+		if (set.char_is_in_set (data.chars[data.cursor])) break;
 		data.cursor--;
 	}
 	return data.cursor;	
@@ -229,17 +232,18 @@ fn char! Buffer.peek_char_at(&self, usz index)
 
 <*
 	gets the word under the cursor
-	@param set `the character set to use to determine word separators, default WHITE_SPACES`
+	@param set `the character set to use to determine word separators, default WHITE_SPACE`
 	@return! BufferError.NULL_BUFFER, BufferError.EOF, BufferError.NO_WORD
 	@return `string slice containing the word`
 *>
-fn String! Buffer.get_word(&self, Cset set = WHITE_SPACES)
+fn String! Buffer.get_word(&self, CSet* set = &cset::WHITE_SPACE)
 {
 	if (!*self) return BufferError.NULL_BUFFER?;
 	BufferData* data = self.data();
 	if (data.cursor == data.len) return BufferError.EOF?;
 	char under = self.peek_char_at(data.cursor)!;
-	if (char_in_cset(under, set)) return BufferError.NO_WORD?;
+	
+	if (set.char_is_in_set (under)) return BufferError.NO_WORD?;
 	usz start = self.r_brk(set);
 	if (start != 0) start = ++data.cursor; // make sure start points to the start of characters in the word.
 	usz end = self.brk(set);
@@ -285,7 +289,7 @@ fn String! Buffer.get_line_from(&self, usz start)
 	usz end = start;
 	while (end < data.len)
 	{
-		if (char_in_cset(data.chars[end], "\n\r")) break;
+		if (cset::LINE_BREAK.char_is_in_set (data.chars[end])) break;
 		end++;
 	}
 	return (String)data.chars[start:end-start];

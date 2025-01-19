@@ -13,7 +13,7 @@ fn bool expect (char c)
 	char ch = source.get_char()!!;
 	if (ch != c) 
 	{
-		io::eprintfn( "Expecting :%c", c);
+		io::eprintfn( "Expecting [%c], got [%c]", c, ch);
 		return false;
 	}
 	return true;
@@ -68,7 +68,7 @@ fn void main()
 				word = source.get_word()!!;
 				dest.cursor_to_bof();
 				dest.find_next("//#MOD")!!;
-				usz loc = dest.cursor_right_lines(2);
+				usz loc = dest.cursor_next_line();
 				dest.delete_range (loc, dest.cursor_to_eol());
 				dest.insertf (loc, "module %s;\n", word);
 
@@ -137,6 +137,64 @@ fn void main()
 				keyword_lens.clear();
 				has_prefix = false;
 
+			case ".newtoken":
+				if (!expect ('=')) break SCAN;
+				source.span();
+				word = source.get_word()!!;
+				dest.cursor_to_bof();
+				dest.find_next("//#TOKEN")!!;
+				usz pt = dest.cursor_next_line();
+				dest.insertf (pt, "\t%s,\n", word);
+
+			case ".token":
+				if (!expect ('=')) break SCAN;
+				source.span();
+				word = source.get_word()!!;
+				dest.cursor_to_bof();
+				DString findword = dstring::temp_new (word);
+				defer findword.free();
+				findword.append (':');
+				if ( try dest.find_next(findword.str_view()))
+				{
+					dest.find_next (":")!!;
+					usz startdel = dest.span();
+					usz enddel = dest.cursor_to_eol();
+					dest.delete_range( startdel, enddel);
+
+					usz start_index = source.cursor_next_line();
+					usz! end_index;
+					while (true)
+					{
+						end_index = source.find_next(".");
+						if ( catch e = end_index )
+						{
+							if (e != BufferError.EOF)
+							{
+								io::eprintfn("Error %s", e);
+								break SCAN;
+							}
+							end_index = source.len();
+							break;
+						} else
+						{
+							if (source.peek_char_at(end_index-2)!! != '\n') continue;
+							source.cursor_left(1); // get before '.' so we can find it again in the loop
+							break;
+						}
+					}
+					// we have start index and end index of replacement soruce.
+					// use the word buffer
+					word_buffer.clear();
+					source.sub_buffer(start_index, end_index-start_index, &word_buffer)!!;
+					dest.insert_char (startdel, '\n');
+					dest.insert_buffer (startdel+1, word_buffer);
+				}
+				else
+				{
+					io::eprintf ("Could not find token :%s", findword.str_view());
+					break SCAN;
+				}
+				
 			default:
 				io::eprintfn("unknown command %s", word);
 				break SCAN;

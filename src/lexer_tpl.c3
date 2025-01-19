@@ -169,18 +169,93 @@ fn Lexeme! Lexer.lex(&self)
 	Tkn token = lex_token_table[cur_char];
 	if (cur_char == '\n') self.line++;
 
-	if (token == ERROR) return LexError.ILLEGAL_CHARACTER?;
-	if (token == ALPHA) return self.get_id();
+	switch (token) @jump
+	{
+		case ERROR:	return LexError.ILLEGAL_CHARACTER?;
 
-	self.caret++;
+		case WHITE_SPACE: nextcase default;
 
-	return	Lexeme
+		case LINE_BREAK: nextcase default;
+
+		case BANG: nextcase default;
+
+		case QUOTE: nextcase default;
+
+		case HASH: nextcase default;
+
+		case DOLLAR: nextcase default;
+
+		case PERCENT: nextcase default;
+
+		case AMPER: nextcase default;
+
+		case APOST: nextcase default;
+
+		case LPAREN: nextcase default;
+
+		case RPAREN: nextcase default;
+
+		case ASTERISK: nextcase default;
+
+		case PLUS: nextcase default;
+
+		case COMMA: nextcase default;
+
+		case MINUS: nextcase default;
+
+		case PERIOD: nextcase default;
+
+		case SLASH: nextcase default;
+
+		case DIGIT: nextcase default;
+
+		case COLON: nextcase default;
+
+		case SEMICOLON: nextcase default;
+
+		case LESS: nextcase default;
+
+		case EQUAL: nextcase default;
+
+		case GREATER: nextcase default;
+
+		case QUESTION: nextcase default;
+
+		case AT: nextcase default;
+
+		case ALPHA: return self.get_id();
+
+		case LBRACKET: nextcase default;
+
+		case BACKSLASH: nextcase default;
+
+		case RBRACKET: nextcase default;
+
+		case CARET: nextcase default;
+
+		case UNDERSCORE: nextcase default;
+
+		case GRAVE: nextcase default;
+
+		case LBRACE: nextcase default;
+
+		case VERTBAR: nextcase default;
+
+		case RBRACE: nextcase default;
+
+		case TILDE: nextcase default;
+
+		default:
+			self.caret++;
+			return	Lexeme
 			{
 				.token = token,
 				.c = cur_char,
 				.slice = self.data[caret:1],
 			};
+	}
 }
+
 
 
 fn Lexeme! Lexer.peek(&self)
