@@ -81,11 +81,13 @@ Can be used as many times as required.
 
 #### .token = \<a Tkn enum to replace\>
 
-This command allows inserting custom code to handle any of the original tokens returned by the lexer.
+This command allows inserting custom code to handle any of the original tokens (except ID) returned by the lexer.
 This is then followed by c3 code that will be inserted in the switch block to handle that token.
-To make the end code prettier, start your code at 3 tabs indents.  
+To make the end code prettier, start your code at 3 tabs indents.
 
 See the example program for an example of how to generate custom handling code for the PLUS token.
+This can also be handy if you want to replace the default ID scanner which captures the ALPHA token
+and returns an ID token.
 
 ## a simple example that lexes a source
 
