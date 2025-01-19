@@ -1,7 +1,7 @@
 # C3 Lexer Generator
 
-* compiled with c3c v0.6.6 (Pre-release, Jan  2 2025 21:25:24)
-* genlex v0.2.0
+* compiled with c3c  0.6.6 (Pre-release, Jan 14 2025 17:02:34)
+* genlex v0.2.4
 
 This program generates a lexer based on a command source file that defines which keywords
 go in the lexer.
