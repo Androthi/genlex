@@ -151,13 +151,11 @@ fn void Lexer.free (&self)
 	free (self.data);
 }
 
-<*
- @require self.data  "NULL data"
-*>
+
 fn Lexeme! Lexer.lex(&self)
 {
 	usz caret = self.caret;
-	if (caret == self.data.len)
+	if (caret == self.data.len || self.data.len == 0)
 	{
 		return	Lexeme
 				{
@@ -270,7 +268,6 @@ fn Lexeme! Lexer.peek(&self)
 
 <*
  skip white spaces in data
- @require self.data  "NULL data"
 *>
 fn void! Lexer.skip_ws(&self)
 {
@@ -285,9 +282,6 @@ fn void! Lexer.skip_ws(&self)
 	}
 }
 
-<*
- @require self.data  "NULL data"
-*>
 fn Lexeme! Lexer.get_id(&self)
 {
 	usz start = self.caret;
